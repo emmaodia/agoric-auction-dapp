@@ -1,7 +1,7 @@
 # Agoric Auction Dapp
 
-The Auction Dapp is a simple [Agoric
-Dapp. It simulates an auction platform using the Zoe Smart Contract it has:
+The Auction Dapp is a simple Agoric Dapp. 
+It simulates an auction platform using the Zoe Smart Contract it has:
 1. the browser UI (the frontend)
 2. the API server (the backend)
 3. the on-chain contract
@@ -34,7 +34,6 @@ Open a terminal and clone the repo to your local machine and install the depende
 ```bash
 git clone https://github.com/emmaodia/agoric-auction-dapp.git
 cd agoric-auction-dapp
-cd demo
 agoric install
 agoric start --reset
 ```
@@ -42,7 +41,6 @@ Leave the terminal running and open another terminal where you will run the foll
 
 ```bash
 cd agoric-auction-dapp
-cd demo
 agoric deploy ./contract/deploy.js ./api/deploy.js
 cd ui
 yarn install
@@ -52,7 +50,7 @@ Start the application in a development environment via:
 ```bash
 yarn start
 ```
-Application will be running on ```http://localhost:3000```
+Application will be running on ```http://localhost:3000``` The page will reload if you make edits.
 
 Go to another tab or browser and open ```http://localhost:8000/``` to see and interact with a basic wallet and a REPL
 
@@ -60,6 +58,7 @@ Go to another tab or browser and open ```http://localhost:8000/``` to see and in
 
 * [Agoric SDK](https://github.com/Agoric/agoric-sdk) - monorepo for the Agoric Javascript smart contract platform.
 * [Zoe](https://agoric.com/documentation/zoe/guide/) - Zoe smart contracts are written in the familiar language of JavaScript.
+* [ReactJS](https://reactjs.org/) - UI Framework
 
 ## Credits
 I'm grateful to: <br/> The Agoric Team <br/> Gitcoin <br/> Google <br/> Stack Overflow <br/> MDN <br/> 
