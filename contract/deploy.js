@@ -53,6 +53,8 @@ export default async function deployContract(
   );
   const installationHandle = await E(zoe).install(source, moduleFormat);
 
+  const instanceHandle = await E(zoe).install(source, moduleFormat);
+
   // Let's share this installationHandle with other people, so that
   // they can run our encouragement contract code by making a contract
   // instance (see the api deploy script in this repo to see an
@@ -69,12 +71,19 @@ export default async function deployContract(
     `${CONTRACT_NAME}installation`,
     installationHandle,
   );
+
+  const INSTANCE_REG_KEY = await E(registry).register(
+    `${CONTRACT_NAME}instance`,
+    instanceHandle,
+  );
   console.log('- SUCCESS! contract code installed on Zoe');
   console.log(`-- Contract Name: ${CONTRACT_NAME}`);
   console.log(`-- InstallationHandle Register Key: ${INSTALLATION_REG_KEY}`);
+  console.log(`-- InstanceHandle Register Key: ${INSTANCE_REG_KEY}`);
 
   // Save the installation registry key somewhere where the UI can find it.
   const dappConstants = {
+    INSTANCE_REG_KEY,
     BRIDGE_URL: 'agoric-lookup:https://local.agoric.com?append=/bridge',
     API_URL: '/',
     CONTRACT_NAME,
