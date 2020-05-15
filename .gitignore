@@ -1,2 +1,3 @@
 node_modules
 dappConstants.js
+ ui/src/utils/defaults.js
