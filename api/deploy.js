@@ -5,7 +5,14 @@ import fs from 'fs';
 import dappConstants from '../ui/src/utils/constants.js';
 import { E } from '@agoric/eventual-send';
 import harden from '@agoric/harden';
+import Nat from '@agoric/nat';
 import { makeGetInstanceHandle } from '@agoric/zoe/src/clientSupport';
+import {
+  defaultAcceptanceMsg,
+  makeZoeHelpers,
+  secondPriceLogic,
+  closeAuction,
+} from '@agoric/zoe/src/contractSupport';
 import makeAmountMath from '@agoric/ertp/src/amountMath';
 
 // deploy.js runs in an ephemeral Node.js outside of swingset. The
@@ -70,7 +77,7 @@ export default async function deployApi(referencesPromise, { bundleSource, pathR
   const { 
     INSTALLATION_REG_KEY
   } = dappConstants;
-  const simpleExchangeContractInstallationHandle = await E(registry).get(INSTALLATION_REG_KEY);
+  const publicAuctionContractInstallationHandle = await E(registry).get(INSTALLATION_REG_KEY);
   
   // Second, we can use the installationHandle to create a new
   // instance of our contract code on Zoe. A contract instance is a running
@@ -83,8 +90,8 @@ export default async function deployApi(referencesPromise, { bundleSource, pathR
   // only accept moola for simoleans and vice versa. (If we wanted to
   // accept other kinds, we could create other instances.) We need to
   // put this information in the form of a keyword (a string that the
-  // contract determines, in this case, 'Asset' and 'Price') plus an
-  // issuer for each: moolaIssuer for Asset and simoleanIssuer for Price.
+  // contract determines, in this case, 'Asset' and 'Bid') plus an
+  // issuer for each: moolaIssuer for Asset and simoleanIssuer for Bid.
 
   // In our example, moola and simoleans are widely used tokens.
   // Someone has already registered the moolaIssuer and simoleanIssuer
@@ -107,8 +114,8 @@ export default async function deployApi(referencesPromise, { bundleSource, pathR
   const moolaAmountMath = await getLocalAmountMath(moolaIssuer);
   const simoleanAmountMath = await getLocalAmountMath(simoleanIssuer);
 
-  const issuerKeywordRecord = { Asset: moolaIssuer, Price: simoleanIssuer };
-  const invite = await E(zoe).makeInstance(simpleExchangeContractInstallationHandle, issuerKeywordRecord);
+  const issuerKeywordRecord = { Asset: moolaIssuer, Bid: simoleanIssuer };
+  const invite = await E(zoe).makeInstance(publicAuctionContractInstallationHandle, issuerKeywordRecord);
   console.log('- SUCCESS! contract instance is running on Zoe');
   
   // Let's get the Zoe invite issuer to be able to inspect our invite further
@@ -129,45 +136,45 @@ export default async function deployApi(referencesPromise, { bundleSource, pathR
   const moolaPurse = purses.get('Fun budget');
   const simoleanPurse = purses.get('Nest egg');
   
-  // Let's add some starting orders to the exchange.
-  // TODO: deposit the resulting payouts back in our purse
-  const orders = [[true, 9, 5], [true, 3, 6], [false, 4, 7]];
+  // // Let's add some starting orders to the exchange.
+  // // TODO: deposit the resulting payouts back in our purse
+  // const orders = [[true, 9, 5], [true, 3, 6], [false, 4, 7]];
 
-  const addOrder = async (isBuy, assetExtent, priceExtent) => {
-    const invite = await E(publicAPI).makeInvite();
-    const assetAmount = moolaAmountMath.make(assetExtent);
-    const priceAmount = simoleanAmountMath.make(priceExtent);
-    const buyProposal = {
-      want: {
-        Asset: assetAmount,
-      },
-      give: {
-        Price: priceAmount,
-      },
-    };
-    const sellProposal = {
-      want: {
-        Price: priceAmount,
-      },
-      give: {
-        Asset: assetAmount,
-      }
-    };
-    const proposal = isBuy ? buyProposal: sellProposal;
-    const payments = {
-      Asset: await E(moolaPurse).withdraw(assetAmount),
-      Price: await E(simoleanPurse).withdraw(priceAmount),
-    };
+  // const addOrder = async (isBuy, assetExtent, priceExtent) => {
+  // const invite = await E(publicAPI).makeInvites();
+  //   const assetAmount = moolaAmountMath.make(assetExtent);
+  //   const priceAmount = simoleanAmountMath.make(priceExtent);
+  //   const buyProposal = {
+  //     want: {
+  //       Asset: assetAmount,
+  //     },
+  //     give: {
+  //       Bid: priceAmount,
+  //     },
+  //   };
+  //   const sellProposal = {
+  //     want: {
+  //       Bid: priceAmount,
+  //     },
+  //     give: {
+  //       Asset: assetAmount,
+  //     }
+  //   };
+  //   const proposal = isBuy ? buyProposal: sellProposal;
+  //   const payments = {
+  //     Asset: await E(moolaPurse).withdraw(assetAmount),
+  //     Bid: await E(simoleanPurse).withdraw(priceAmount),
+  //   };
 
-    const { payout, outcome, offerHandle } = await E(zoe).offer(invite, proposal, payments);
-    return { payout, outcome, offerHandle };
-  };
+  // const { payout, outcome, offerHandle } = await E(zoe).offer(invite, proposal, payments);
+  //   return { payout, outcome, offerHandle };
+  // };
 
-  const allPerformed = orders.map(([isBuy, assetExtent, priceExtent], i) =>
-    addOrder(isBuy, assetExtent, priceExtent)
-  );
+  // const allPerformed = orders.map(([isBuy, assetExtent, priceExtent], i) =>
+  //   addOrder(isBuy, assetExtent, priceExtent)
+  // );
 
-  await Promise.all(allPerformed);
+  // await Promise.all(allPerformed);
 
   // Now that we've done all the admin work, let's share this
   // instanceHandle by adding it to the registry. Any users of our
