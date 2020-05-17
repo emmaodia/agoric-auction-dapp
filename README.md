@@ -42,15 +42,8 @@ Leave the terminal running and open another terminal where you will run the foll
 ```bash
 cd agoric-auction-dapp
 agoric deploy ./contract/deploy.js ./api/deploy.js
-cd ui
-yarn install
 ```
 Start the application in a development environment via:
-
-```bash
-yarn start
-```
-Application will be running on ```http://localhost:3000``` The page will reload if you make edits.
 
 Go to another tab or browser and open ```http://localhost:8000/``` to see and interact with a basic wallet and a REPL
 
