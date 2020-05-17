@@ -43,7 +43,7 @@ Leave the terminal running and open another terminal where you will run the foll
 cd agoric-auction-dapp
 agoric deploy ./contract/deploy.js ./api/deploy.js
 ```
-Start the application in a development environment via:
+The Contract is now successfully deployed on the Zoe Test net and can be interacted with given a UI.
 
 Go to another tab or browser and open ```http://localhost:8000/``` to see and interact with a basic wallet and a REPL
 
