@@ -90,17 +90,17 @@ export default harden(({ publicAPI, keywords, brandPs, http }, _inviteMaker) => 
             async onMessage(obj, { channelHandle }) {
             console.debug(obj);
             switch (obj.type) {
-                case 'simpleExchange/getRecentOrders': {
+                case 'publicAuction/getRecentOrders': {
                 return harden({
-                    type: 'simpleExchange/getRecentOrdersResponse',
+                    type: 'publicAuction/getRecentOrdersResponse',
                     data: recentOrders,
                 });
                 }
 
-                case 'simpleExchange/subscribeRecentOrders': {
+                case 'publicAuction/subscribeRecentOrders': {
                 subscribeRecentOrders(channelHandle);
                 return harden({
-                    type: 'simpleExchange/subscribeRecentOrdersResponse',
+                    type: 'publicAuction/subscribeRecentOrdersResponse',
                     data: true,
                 });
                 }
