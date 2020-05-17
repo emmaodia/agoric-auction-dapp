@@ -4,15 +4,9 @@
 import fs from 'fs';
 import dappConstants from '../ui/src/utils/constants.js';
 import { E } from '@agoric/eventual-send';
-import harden from '@agoric/harden';
-import Nat from '@agoric/nat';
+
 import { makeGetInstanceHandle } from '@agoric/zoe/src/clientSupport';
-import {
-  defaultAcceptanceMsg,
-  makeZoeHelpers,
-  secondPriceLogic,
-  closeAuction,
-} from '@agoric/zoe/src/contractSupport';
+
 import makeAmountMath from '@agoric/ertp/src/amountMath';
 
 // deploy.js runs in an ephemeral Node.js outside of swingset. The
